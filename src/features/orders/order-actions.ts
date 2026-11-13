@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { placeCodOrder, PlaceOrderInput } from "./order-service";
 import { codCheckoutSchema } from "@/lib/validation/morocco";
 
-export async function submitCodOrderAction(formData: unknown) {
+export async function submitCodOrderAction(formData: unknown): Promise<PlaceOrderResult> {
   try {
     const headerList = await headers();
     const forwardedFor = headerList.get("x-forwarded-for");

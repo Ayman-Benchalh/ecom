@@ -5,8 +5,6 @@ import { db } from "@/lib/db";
 import { products } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 
-export const revalidate = 60; // Cache for 60 seconds
-
 export default async function StorefrontHomePage({
   params,
 }: {
