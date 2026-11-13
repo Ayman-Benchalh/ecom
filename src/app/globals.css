@@ -1,26 +1,145 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@layer base {
+  :root {
+    --background: #fbfdfc;
+    --foreground: #191c1b;
+
+    --card: #ffffff;
+    --card-foreground: #191c1b;
+
+    --popover: #ffffff;
+    --popover-foreground: #191c1b;
+
+    /* Material 3 Rich Moroccan Emerald */
+    --primary: #0f4c3a;
+    --primary-foreground: #ffffff;
+    --primary-container: #d1e8de;
+    --on-primary-container: #002117;
+
+    /* Warm Terracotta Accent */
+    --secondary: #b25e29;
+    --secondary-foreground: #ffffff;
+    --secondary-container: #ffdcc6;
+    --on-secondary-container: #3b1700;
+
+    --muted: #e8eae9;
+    --muted-foreground: #5a6460;
+
+    --accent: #eef5f2;
+    --accent-foreground: #0f4c3a;
+
+    --destructive: #ba1a1a;
+    --destructive-foreground: #ffffff;
+
+    --border: #dbe0de;
+    --input: #e0e5e3;
+    --ring: #0f4c3a;
+
+    --radius: 0.75rem;
+
+    /* Surface tokens */
+    --surface-dim: #dbdedc;
+    --surface-bright: #fbfdfc;
+    --surface-container-low: #f5f8f6;
+    --surface-container: #eff2f0;
+    --surface-container-high: #e9ecea;
+  }
+
+  .dark {
+    --background: #111413;
+    --foreground: #e1e3df;
+
+    --card: #191c1b;
+    --card-foreground: #e1e3df;
+
+    --popover: #191c1b;
+    --popover-foreground: #e1e3df;
+
+    --primary: #6edcb6;
+    --primary-foreground: #003828;
+    --primary-container: #00513b;
+    --on-primary-container: #8cf8d1;
+
+    --secondary: #ffb68f;
+    --secondary-foreground: #552200;
+    --secondary-container: #773200;
+    --on-secondary-container: #ffdcc6;
+
+    --muted: #282b2a;
+    --muted-foreground: #89938f;
+
+    --accent: #1e2623;
+    --accent-foreground: #6edcb6;
+
+    --destructive: #ffb4ab;
+    --destructive-foreground: #690005;
+
+    --border: #2c3230;
+    --input: #2c3230;
+    --ring: #6edcb6;
+
+    --surface-dim: #111413;
+    --surface-bright: #373a39;
+    --surface-container-low: #191c1b;
+    --surface-container: #1d201f;
+    --surface-container-high: #282b2a;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-container: var(--primary-container);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* RTL layout helpers */
+[dir="rtl"] {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  text-align: right;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 9999px;
+}
+
+/* Safe touch target utility for mobile */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
 }
