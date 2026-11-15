@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { getDictionary, isRTL } from "@/lib/i18n";
-import { LanguageSwitcher } from "./language-switcher";
 import { ThemeToggle } from "../theme-toggle";
-import { Truck, ShieldCheck, ShoppingBag } from "lucide-react";
+import { Truck } from "lucide-react";
 
 interface NavbarProps {
   locale: string;
@@ -30,11 +29,8 @@ export function Navbar({ locale }: NavbarProps) {
           href={`/${locale}`}
           className="flex items-center gap-2 group cursor-pointer focus:outline-hidden"
         >
-          <div className="w-9 h-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-black tracking-wider text-lg shadow-sm group-hover:scale-105 transition-transform">
-            R
-          </div>
           <div className="flex flex-col">
-            <span className="font-extrabold tracking-tight text-xl text-foreground font-serif leading-none">
+            <span className="font-extrabold tracking-tight text-2xl text-foreground font-serif leading-none group-hover:text-primary transition-colors">
               RAYANA
             </span>
             <span className="text-[10px] tracking-widest text-muted-foreground uppercase font-medium mt-0.5">
@@ -71,9 +67,8 @@ export function Navbar({ locale }: NavbarProps) {
           </Link>
         </nav>
 
-        {/* Controls: Language Switcher, Theme Toggle & Admin link */}
+        {/* Controls: Theme Toggle & Admin link */}
         <div className="flex items-center gap-2.5">
-          <LanguageSwitcher currentLocale={locale} />
           <ThemeToggle />
           <Link
             href={`/${locale}/admin`}

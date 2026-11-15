@@ -62,10 +62,7 @@ export function Footer({ locale }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 py-10 border-b border-border/80 text-sm">
           <div className="md:col-span-2 space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-                R
-              </div>
-              <span className="font-extrabold text-lg tracking-tight font-serif">
+              <span className="font-extrabold text-xl tracking-tight font-serif">
                 RAYANA
               </span>
             </div>
