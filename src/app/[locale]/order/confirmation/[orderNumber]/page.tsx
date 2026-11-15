@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   ShoppingBag,
   ArrowRight,
+  MessageCircle,
 } from "lucide-react";
 
 export default async function OrderConfirmationPage({
@@ -51,6 +52,34 @@ export default async function OrderConfirmationPage({
             Un membre de l'équipe RAYANA va vous joindre au <strong>{order.customerPhone}</strong> dans les prochaines heures pour valider votre adresse exacte et planifier l'envoi du colis. Gardez votre téléphone à portée de main !
           </p>
         </div>
+      </div>
+
+      {/* WhatsApp Immediate Confirmation Button */}
+      <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+            <MessageCircle className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="font-bold text-sm text-foreground">
+              Accélérez votre livraison via WhatsApp
+            </h4>
+            <p className="text-xs text-muted-foreground">
+              Confirmez directement votre adresse à notre équipe pour un départ express
+            </p>
+          </div>
+        </div>
+        <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold w-full sm:w-auto text-xs shrink-0 shadow-md">
+          <a
+            href={`https://wa.me/212612345678?text=${encodeURIComponent(
+              `Salam RAYANA, je confirme ma commande ${order.orderNumber} (${order.offerTitle}) pour livraison à ${order.customerCity}.`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Confirmer sur WhatsApp
+          </a>
+        </Button>
       </div>
 
       {/* Order Details Card */}

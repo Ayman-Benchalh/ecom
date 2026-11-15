@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from "@/lib/utils/cache";
 import { requireAdmin } from "@/lib/security/session";
 import { db } from "@/lib/db";
 import { codSettlements, codSettlementOrders, orders, carriers } from "@/lib/db/schema";
@@ -57,8 +57,9 @@ export async function createCodSettlementAction(input: {
       }
     }
 
-    revalidatePath("/[locale]/admin/carriers");
-    revalidatePath("/[locale]/admin");
+    safeRevalidatePath("/[locale]/admin/carriers");
+    safeRevalidatePath("/[locale]/admin");
     return { success: true, settlementId: settlement.id };
   });
 }
+

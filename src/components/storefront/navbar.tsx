@@ -87,3 +87,4 @@ export function Navbar({ locale }: NavbarProps) {
     </header>
   );
 }
+

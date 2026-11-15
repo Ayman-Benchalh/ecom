@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { products } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 export default async function StorefrontHomePage({
   params,
 }: {
@@ -16,15 +18,19 @@ export default async function StorefrontHomePage({
   let landingData = await getProductLandingData("t-shirt-signature-rayana");
 
   if (!landingData) {
-    const fallbackProducts = await db
-      .select({ slug: products.slug })
-      .from(products)
-      .where(eq(products.status, "active"))
-      .orderBy(desc(products.createdAt))
-      .limit(1);
+    try {
+      const fallbackProducts = await db
+        .select({ slug: products.slug })
+        .from(products)
+        .where(eq(products.status, "active"))
+        .orderBy(desc(products.createdAt))
+        .limit(1);
 
-    if (fallbackProducts.length > 0) {
-      landingData = await getProductLandingData(fallbackProducts[0].slug);
+      if (fallbackProducts.length > 0) {
+        landingData = await getProductLandingData(fallbackProducts[0].slug);
+      }
+    } catch {
+      // Fallback if DB is not reachable during build or startup
     }
   }
 

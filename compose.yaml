@@ -1,0 +1,86 @@
+services:
+  # 1. PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: rayana-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-rayana}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rayana_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-rayana_db}
+    volumes:
+      - rayana_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-rayana} -d ${POSTGRES_DB:-rayana_db}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - rayana-internal
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # 2. RAYANA Next.js Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rayana-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-rayana}:${POSTGRES_PASSWORD:-rayana_secret}@postgres:5432/${POSTGRES_DB:-rayana_db}
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:-rayana_super_secret_session_key_at_least_32_chars_long}
+      ADMIN_BOOTSTRAP_EMAIL: ${ADMIN_BOOTSTRAP_EMAIL:-admin@rayana.ma}
+      ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_BOOTSTRAP_PASSWORD:-RayanaAdmin2026!Secure}
+      NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-RAYANA}
+      NEXT_PUBLIC_DEFAULT_LOCALE: ${NEXT_PUBLIC_DEFAULT_LOCALE:-fr}
+      NEXT_PUBLIC_DEFAULT_CURRENCY: ${NEXT_PUBLIC_DEFAULT_CURRENCY:-MAD}
+      PORT: 3000
+    networks:
+      - rayana-internal
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+
+  # 3. Caddy Reverse Proxy (Automatic HTTPS, Zstd Compression)
+  caddy:
+    image: caddy:2.8-alpine
+    container_name: rayana-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - rayana_caddy_data:/data
+      - rayana_caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - rayana-internal
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+volumes:
+  rayana_pgdata:
+    name: rayana_pgdata
+  rayana_caddy_data:
+    name: rayana_caddy_data
+  rayana_caddy_config:
+    name: rayana_caddy_config
+
+networks:
+  rayana-internal:
+    driver: bridge

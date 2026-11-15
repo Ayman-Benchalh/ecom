@@ -21,6 +21,7 @@ import {
   Loader2,
   Send,
   Sparkles,
+  MessageCircle,
 } from "lucide-react";
 
 interface OrderItem {
@@ -285,8 +286,19 @@ export function OrdersTable({ orders, carriers, locale }: OrdersTableProps) {
                       <div className="font-bold text-foreground">
                         {ord.customerName}
                       </div>
-                      <div className="text-muted-foreground font-mono text-[11px]">
-                        {ord.customerPhone}
+                      <div className="pt-0.5">
+                        <a
+                          href={`https://wa.me/${ord.customerPhone.replace(/\D/g, "").replace(/^0/, "212")}?text=${encodeURIComponent(
+                            `Salam ${ord.customerName}, c'est le service client RAYANA au sujet de votre commande ${ord.orderNumber} (${ord.offerTitle}). Pouvez-vous nous confirmer votre adresse à ${ord.customerCity} pour la livraison svp ?`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-mono font-bold hover:underline"
+                          title="Contacter sur WhatsApp"
+                        >
+                          <MessageCircle className="w-3 h-3" />
+                          {ord.customerPhone}
+                        </a>
                       </div>
                     </td>
                     <td className="py-3 px-4 font-medium text-foreground">
@@ -547,3 +559,4 @@ export function OrdersTable({ orders, carriers, locale }: OrdersTableProps) {
     </div>
   );
 }
+

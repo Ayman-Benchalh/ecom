@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from "@/lib/utils/cache";
 import { requireAdmin } from "@/lib/security/session";
 import { createOfferWithSlots } from "./offer-service";
 
@@ -54,6 +54,7 @@ export async function createPackOfferAction(input: {
     slots,
   });
 
-  revalidatePath("/[locale]/admin/packs");
+  safeRevalidatePath("/[locale]/admin/packs");
   return { success: true, offer };
 }
+

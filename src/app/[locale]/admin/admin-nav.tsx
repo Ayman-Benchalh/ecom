@@ -109,3 +109,4 @@ export function AdminNav({ locale, adminName }: AdminNavProps) {
     </aside>
   );
 }
+

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from "@/lib/utils/cache";
 import { requireAdmin } from "@/lib/security/session";
 import { db } from "@/lib/db";
 import { orders, orderEvents, shipments, inventoryMovements, productVariants, orderItems } from "@/lib/db/schema";
@@ -126,7 +126,8 @@ export async function updateOrderStatusAction(input: {
       notes: input.notes || `Statut mis à jour vers ${input.newStatus}`,
     });
 
-    revalidatePath("/[locale]/admin/orders");
+    safeRevalidatePath("/[locale]/admin/orders");
     return { success: true };
   });
 }
+

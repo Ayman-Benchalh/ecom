@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from "@/lib/utils/cache";
 import { requireAdmin } from "@/lib/security/session";
 import { db } from "@/lib/db";
 import { products, productVariants, inventoryMovements } from "@/lib/db/schema";
@@ -44,7 +44,7 @@ export async function adjustVariantStockAction(input: {
       notes: input.notes || `Ajustement de stock par ${admin.email}`,
     });
 
-    revalidatePath("/[locale]/admin/products");
+    safeRevalidatePath("/[locale]/admin/products");
     return { success: true, newStock };
   });
 }
@@ -97,6 +97,7 @@ export async function createNewProductAction(input: {
     });
   }
 
-  revalidatePath("/[locale]/admin/products");
+  safeRevalidatePath("/[locale]/admin/products");
   return { success: true, product };
 }
+

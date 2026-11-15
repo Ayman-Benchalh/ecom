@@ -110,3 +110,4 @@ export const ar: Dictionary = {
     logout: "تسجيل الخروج",
   },
 };
+

@@ -1,0 +1,17 @@
+{
+  "name": "RAYANA — Mode & Essentiels Premium",
+  "short_name": "RAYANA",
+  "description": "Boutique officielle RAYANA au Maroc. Packs avantageux et paiement à la livraison.",
+  "start_url": "/fr",
+  "display": "standalone",
+  "background_color": "#FBFDFC",
+  "theme_color": "#0F4C3A",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
+

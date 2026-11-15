@@ -1,7 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
-import { placeCodOrder, PlaceOrderInput } from "./order-service";
+import { placeCodOrder, PlaceOrderInput, PlaceOrderResult } from "./order-service";
 import { codCheckoutSchema } from "@/lib/validation/morocco";
 
 export async function submitCodOrderAction(formData: unknown): Promise<PlaceOrderResult> {

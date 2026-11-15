@@ -229,3 +229,4 @@ export async function revokeAdminSession(sessionToken: string) {
     .set({ revokedAt: new Date() })
     .where(eq(adminSessions.token, sessionToken));
 }
+

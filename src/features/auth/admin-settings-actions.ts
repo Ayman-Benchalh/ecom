@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from "@/lib/utils/cache";
 import { requireAdmin } from "@/lib/security/session";
 import { db } from "@/lib/db";
 import { settings, adminUsers } from "@/lib/db/schema";
@@ -30,7 +30,7 @@ export async function updateStoreSettingsAction(input: {
       },
     });
 
-  revalidatePath("/[locale]/admin/settings");
+  safeRevalidatePath("/[locale]/admin/settings");
   return { success: true };
 }
 
@@ -53,3 +53,4 @@ export async function changeAdminPasswordAction(newPassword: string) {
 
   return { success: true };
 }
+

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from "@/lib/utils/cache";
 import { requireAdmin } from "@/lib/security/session";
 import { db } from "@/lib/db";
 import { landingPages, landingPageVersions } from "@/lib/db/schema";
@@ -58,8 +58,8 @@ export async function saveLandingPageVersionAction(input: {
         .where(eq(landingPages.id, page.id));
     }
 
-    revalidatePath("/[locale]/admin/pages");
-    revalidatePath("/[locale]");
+    safeRevalidatePath("/[locale]/admin/pages");
+    safeRevalidatePath("/[locale]");
     return { success: true, versionNumber: nextVersion };
   });
 }
@@ -107,7 +107,7 @@ export async function duplicateLandingPageAction(landingPageId: string) {
       });
     }
 
-    revalidatePath("/[locale]/admin/pages");
+    safeRevalidatePath("/[locale]/admin/pages");
     return { success: true, duplicatedId: duplicated.id };
   });
 }

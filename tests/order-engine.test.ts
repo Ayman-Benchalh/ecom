@@ -137,3 +137,4 @@ describe("Pack Engine & Authoritative Order Checkout", () => {
     expect(vAfterDuplicate.stockQuantity).toBe(9); // Still 9, no duplicate deduction!
   });
 });
+

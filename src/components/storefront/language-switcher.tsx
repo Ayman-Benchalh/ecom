@@ -60,3 +60,4 @@ export function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
     </div>
   );
 }
+

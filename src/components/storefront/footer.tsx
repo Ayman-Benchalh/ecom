@@ -125,7 +125,7 @@ export function Footer({ locale }: FooterProps) {
               </li>
               <li>
                 <span className="text-muted-foreground/80">
-                  © {new Date().getFullYear()} RAYANA SARL. Tous droits réservés.
+                  © 2026 RAYANA SARL. Tous droits réservés.
                 </span>
               </li>
             </ul>

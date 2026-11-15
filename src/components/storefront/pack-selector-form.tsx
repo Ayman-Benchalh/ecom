@@ -168,11 +168,11 @@ export function PackSelectorForm({ offers, locale }: PackSelectorFormProps) {
         idempotencyKey,
       });
 
-      if (res.success && res.orderNumber) {
+      if (res.success && "orderNumber" in res && res.orderNumber) {
         // Redirect to order confirmation page
         router.push(`/${locale}/order/confirmation/${res.orderNumber}`);
       } else {
-        setErrorMsg(res.error || dict.checkout.submitError);
+        setErrorMsg(("error" in res && res.error) || dict.checkout.submitError);
       }
     });
   };

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from "@/lib/utils/cache";
 import { requireAdmin } from "@/lib/security/session";
 import { db } from "@/lib/db";
 import { returns, orders } from "@/lib/db/schema";
@@ -32,6 +32,7 @@ export async function updateReturnStatusAction(input: {
 
   await db.update(returns).set(updateFields).where(eq(returns.id, input.returnId));
 
-  revalidatePath("/[locale]/admin/returns");
+  safeRevalidatePath("/[locale]/admin/returns");
   return { success: true };
 }
+

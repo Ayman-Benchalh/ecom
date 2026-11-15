@@ -86,91 +86,96 @@ export async function getOffersForProduct(productId: string) {
 }
 
 export async function getProductLandingData(productSlug: string) {
-  const prodRows = await db
-    .select()
-    .from(products)
-    .where(eq(products.slug, productSlug))
-    .limit(1);
+  try {
+    const prodRows = await db
+      .select()
+      .from(products)
+      .where(eq(products.slug, productSlug))
+      .limit(1);
 
-  if (prodRows.length === 0) return null;
-  const product = prodRows[0];
+    if (prodRows.length === 0) return null;
+    const product = prodRows[0];
 
-  // Fetch offers
-  const rawOffers = await db
-    .select()
-    .from(offers)
-    .where(and(eq(offers.productId, product.id), eq(offers.isActive, true)))
-    .orderBy(offers.displayOrder);
+    // Fetch offers
+    const rawOffers = await db
+      .select()
+      .from(offers)
+      .where(and(eq(offers.productId, product.id), eq(offers.isActive, true)))
+      .orderBy(offers.displayOrder);
 
-  const offerIds = rawOffers.map((o) => o.id);
-  const rawSlots =
-    offerIds.length > 0
-      ? await db
-          .select()
-          .from(offerSlots)
-          .where(inArray(offerSlots.offerId, offerIds))
-          .orderBy(offerSlots.slotNumber)
-      : [];
+    const offerIds = rawOffers.map((o) => o.id);
+    const rawSlots =
+      offerIds.length > 0
+        ? await db
+            .select()
+            .from(offerSlots)
+            .where(inArray(offerSlots.offerId, offerIds))
+            .orderBy(offerSlots.slotNumber)
+        : [];
 
-  // For each slot, get variants of the slot's product
-  const enrichedOffers = await Promise.all(
-    rawOffers.map(async (offer) => {
-      const slotsForOffer = rawSlots.filter((s) => s.offerId === offer.id);
-      const enrichedSlots = await Promise.all(
-        slotsForOffer.map(async (slot) => {
-          const variants = await db
-            .select({
-              id: productVariants.id,
-              sku: productVariants.sku,
-              title: productVariants.title,
-              stockQuantity: productVariants.stockQuantity,
-            })
-            .from(productVariants)
-            .where(
-              and(
-                eq(productVariants.productId, slot.productId),
-                eq(productVariants.status, "active")
+    // For each slot, get variants of the slot's product
+    const enrichedOffers = await Promise.all(
+      rawOffers.map(async (offer) => {
+        const slotsForOffer = rawSlots.filter((s) => s.offerId === offer.id);
+        const enrichedSlots = await Promise.all(
+          slotsForOffer.map(async (slot) => {
+            const variants = await db
+              .select({
+                id: productVariants.id,
+                sku: productVariants.sku,
+                title: productVariants.title,
+                stockQuantity: productVariants.stockQuantity,
+              })
+              .from(productVariants)
+              .where(
+                and(
+                  eq(productVariants.productId, slot.productId),
+                  eq(productVariants.status, "active")
+                )
               )
-            )
-            .orderBy(productVariants.title);
+              .orderBy(productVariants.title);
 
-          return {
-            ...slot,
-            product: {
-              id: product.id,
-              name: product.name,
-            },
-            variants,
-          };
-        })
-      );
+            return {
+              ...slot,
+              product: {
+                id: product.id,
+                name: product.name,
+              },
+              variants,
+            };
+          })
+        );
 
-      return {
-        ...offer,
-        slots: enrichedSlots,
-      };
-    })
-  );
+        return {
+          ...offer,
+          slots: enrichedSlots,
+        };
+      })
+    );
 
-  // Fetch approved customer reviews
-  const approvedReviews = await db
-    .select({
-      id: reviews.id,
-      customerName: reviews.customerName,
-      customerCity: reviews.customerCity,
-      rating: reviews.rating,
-      headline: reviews.headline,
-      comment: reviews.comment,
-      isVerifiedPurchase: reviews.isVerifiedPurchase,
-    })
-    .from(reviews)
-    .where(and(eq(reviews.productId, product.id), eq(reviews.status, "approved")))
-    .orderBy(desc(reviews.createdAt))
-    .limit(10);
+    // Fetch approved customer reviews
+    const approvedReviews = await db
+      .select({
+        id: reviews.id,
+        customerName: reviews.customerName,
+        customerCity: reviews.customerCity,
+        rating: reviews.rating,
+        headline: reviews.headline,
+        comment: reviews.comment,
+        isVerifiedPurchase: reviews.isVerifiedPurchase,
+      })
+      .from(reviews)
+      .where(and(eq(reviews.productId, product.id), eq(reviews.status, "approved")))
+      .orderBy(desc(reviews.createdAt))
+      .limit(10);
 
-  return {
-    product,
-    offers: enrichedOffers,
-    reviews: approvedReviews,
-  };
+    return {
+      product,
+      offers: enrichedOffers,
+      reviews: approvedReviews,
+    };
+  } catch (error) {
+    console.warn("Could not fetch product landing data (DB offline during build?):", error);
+    return null;
+  }
 }

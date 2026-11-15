@@ -42,3 +42,4 @@ describe("Moroccan Phone Validation & Normalization", () => {
     expect(moroccanPhoneSchema.safeParse("0123456789").success).toBe(false);
   });
 });
+

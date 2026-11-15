@@ -657,3 +657,4 @@ export const analyticsEvents = pgTable(
     index("analytics_events_landing_page_idx").on(table.landingPageId),
   ]
 );
+

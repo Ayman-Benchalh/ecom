@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RAYANA — Moroccan E-Commerce Platform
 
-## Getting Started
+**RAYANA** is a high-converting, lightweight, secure, and production-ready single-merchant e-commerce platform specifically tailored for the Moroccan retail market.
 
-First, run the development server:
+Built around high-performing landing pages, independent pack/bundle customization, Cash on Delivery (COD) workflows, local carrier tracking, and authentic review moderation.
 
+---
+
+## 🌟 Key Highlights & Moroccan Market Optimizations
+
+1. **High-Converting Moroccan COD Checkout:**
+   - No customer registration or password required.
+   - Minimal checkout: Full Name, Phone (normalized +212 Moroccan mobile validation), and searchable Moroccan Cities list (Casablanca, Rabat, Marrakech, Fès, Tanger, Agadir, etc.).
+   - Authoritative server-side price computation (the client never dictates price).
+   - Idempotent order placement preventing accidental double submissions.
+
+2. **Advanced Pack & Bundle Engine:**
+   - Single offers, Duo packs (e.g. 2 pieces for 169 MAD), and Trio packs.
+   - **Independent Piece Customization:** The customer selects colors and sizes independently for every piece in the pack (e.g. Piece 1: Black / M, Piece 2: Beige / XL).
+   - Atomic database transactions with real-time stock deduction and inventory ledger tracking.
+
+3. **Internationalization & Direction (RTL):**
+   - French (`fr` - default), Arabic (`ar` - genuine RTL layout `dir="rtl"`), and English (`en`).
+   - Moroccan Dirham (`MAD` / `د.م.`) currency formatting.
+
+4. **Structured Landing Page Builder:**
+   - Lightweight section-based visual builder: Announcement bar, Hero, Benefits, Pack Selector, COD Checkout Form, Verified Reviews, Guarantee, and FAQs.
+   - Version history, draft/preview, instant publish, and page duplication.
+   - Design token customization (Moroccan emerald primary `#0F4C3A`, terracotta accent, corner radius).
+
+5. **Moroccan Shipping & COD Reconciliation:**
+   - Carrier configuration (Amana Express, Cathedis, OzAleph).
+   - Order lifecycle: `NEW` ➔ `CONTACTED` ➔ `CONFIRMED` ➔ `READY` ➔ `SHIPPED` ➔ `DELIVERED` (or `CANCELLED` / `RETURNED`).
+   - Financial lifecycle: `UNPAID` ➔ `COLLECTED_BY_CARRIER` ➔ `SETTLED`.
+   - 1-click CSV export for courier manifest preparation.
+   - Direct COD reconciliation: track collected cash from couriers against shipping fees and bank deposits.
+
+6. **Customer Trust & After-Sales (SAV):**
+   - Verified customer reviews through 192-bit cryptographic, time-limited invitation links after delivery.
+   - Customer return and size-exchange request portal with secure Order Number + Phone lookup.
+   - Complete moderation and decision queue in the admin dashboard.
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework:** Next.js 16 (App Router, Server Actions, React 19)
+- **Styling:** Tailwind CSS, Material Design 3 tokens, Radix UI primitives, Lucide icons
+- **Database:** PostgreSQL 16 + Drizzle ORM (type-safe queries, migrations, atomic transactions)
+- **Security:** HTTP-only SameSite cookies, bcryptjs (12 salt rounds), brute-force lockout, parameterized queries
+- **Testing:** Vitest (Integration, Unit, and 30-step End-to-End lifecycle tests)
+- **Deployment:** Docker, Docker Compose, Caddy Reverse Proxy (Automatic HTTPS, zstd/gzip compression)
+
+---
+
+## 🚀 Quick Start (Development)
+
+### 1. Prerequisites
+- Node.js 20+ (v22/v26 tested)
+- Docker & Docker Compose (for PostgreSQL)
+
+### 2. Environment Setup
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Start Database
+```bash
+docker run -d --name rayana-postgres -e POSTGRES_USER=rayana -e POSTGRES_PASSWORD=rayana_secret -e POSTGRES_DB=rayana_db -p 5432:5432 postgres:16-alpine
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Run Migrations & Seed Data
+```bash
+# Push SQL migrations to PostgreSQL
+npx drizzle-kit migrate
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Seed catalog, flagship product, pack offers, Moroccan carriers & reviews
+npx tsx scripts/seed.ts
+```
 
-## Learn More
+### 5. Run Development Server
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Visit:
+- **Public Storefront:** [http://localhost:3000/fr](http://localhost:3000/fr)
+- **Arabic Storefront (RTL):** [http://localhost:3000/ar](http://localhost:3000/ar)
+- **Admin Dashboard:** [http://localhost:3000/fr/admin](http://localhost:3000/fr/admin)
+  - **Email:** `admin@rayana.ma`
+  - **Password:** `RayanaAdmin2026!Secure`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧪 Testing Suite
 
-## Deploy on Vercel
+Run all automated unit and integration tests:
+```bash
+npx vitest run
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Test coverage includes:
+- `tests/morocco-phone.test.ts`: Moroccan phone number normalization (+212 6xx, 06xx, 07xx, 05xx)
+- `tests/order-engine.test.ts`: Pack engine, independent variants, stock deduction, and idempotency
+- `tests/auth.test.ts`: Password hashing, session creation, lockout, and revocation
+- `tests/full-e2e-scenario.test.ts`: Complete Section 23 30-step end-to-end lifecycle test
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🐳 Production Deployment (Docker + Caddy)
+
+To deploy the entire production stack on a VPS:
+
+```bash
+docker compose up -d --build
+```
+
+Services started:
+1. `rayana-app`: Next.js standalone container (port 3000 internal, non-root user `nextjs`)
+2. `rayana-db`: PostgreSQL 16 Alpine with persistent volume `rayana_pgdata`
+3. `rayana-proxy`: Caddy server on ports 80/443 with automatic TLS certificate provisioning
+
+### Database Backup & Restore
+- **Backup:**
+  ```bash
+  bash scripts/backup.sh
+  ```
+- **Restore:**
+  ```bash
+  bash scripts/restore.sh ./backups/rayana_backup_YYYYMMDD_HHMMSS.sql.gz
+  ```

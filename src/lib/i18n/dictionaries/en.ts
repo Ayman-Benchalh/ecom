@@ -110,3 +110,4 @@ export const en: Dictionary = {
     logout: "Log out",
   },
 };
+

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { safeRevalidatePath } from "@/lib/utils/cache";
 import { requireAdmin } from "@/lib/security/session";
 import { db } from "@/lib/db";
 import { reviews } from "@/lib/db/schema";
@@ -21,7 +21,8 @@ export async function moderateReviewAction(input: {
     })
     .where(eq(reviews.id, input.reviewId));
 
-  revalidatePath("/[locale]/admin/reviews");
-  revalidatePath("/[locale]");
+  safeRevalidatePath("/[locale]/admin/reviews");
+  safeRevalidatePath("/[locale]");
   return { success: true };
 }
+

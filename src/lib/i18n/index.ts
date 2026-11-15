@@ -31,3 +31,4 @@ export function formatMAD(amount: number | string, locale: string = "fr"): strin
   }
   return `${num.toFixed(2)} MAD`;
 }
+
